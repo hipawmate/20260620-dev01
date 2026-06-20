@@ -1,1 +1,7 @@
-document.getElementById("year").textContent = new Date().getFullYear();
+console.log("HiPawMate V2 loaded 🐾");
+
+// Future features:
+// - Search artikel
+// - Filter kategori
+// - Newsletter signup
+// - Affiliate tracking
