@@ -227,8 +227,12 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.cards-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .topic-card {
-  min-height: 230px;
+  min-height: 250px;
   padding: 28px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -318,6 +322,12 @@ h3 {
   color: var(--accent);
 }
 
+@media (max-width: 1040px) {
+  .cards-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 860px) {
   .site-header {
     align-items: flex-start;
@@ -332,7 +342,8 @@ h3 {
 
   .hero,
   .about,
-  .cards-3 {
+  .cards-3,
+  .cards-4 {
     grid-template-columns: 1fr;
   }
 
@@ -355,4 +366,8 @@ h3 {
   .topic-card {
     border-radius: 24px;
   }
+}
+
+.muted-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fbf7 100%);
 }

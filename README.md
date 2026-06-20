@@ -1,8 +1,15 @@
 # HiPawMate Website
 
-HiPawMate is a content-first pet care brand.
+HiPawMate adalah content-first pet care brand untuk membantu PawMates membuat keputusan yang lebih baik.
 
 **Tagline:** Helping PawMates make better choices.
+
+## Focus V2
+
+- Aksesoris & perlengkapan pet care
+- Home & lifestyle untuk paw parents
+- Panduan pet parent
+- Makanan & nutrisi sebagai kategori lanjutan
 
 ## Files
 
@@ -12,21 +19,19 @@ HiPawMate is a content-first pet care brand.
 
 ## Deploy to Vercel
 
-1. Create a GitHub repository, for example: `hipawmate-website`
-2. Upload these files to the repository.
-3. Go to Vercel and import the GitHub repository.
-4. Framework preset: **Other**
-5. Build command: leave empty
-6. Output directory: leave empty
-7. Click **Deploy**
+1. Upload atau replace file di GitHub repository.
+2. Vercel akan auto-deploy setelah commit baru masuk.
+3. Framework preset: **Other**
+4. Build command: leave empty
+5. Output directory: leave empty
 
 ## Update social links
 
-In `index.html`, replace these links if needed:
+Di `index.html`, replace link berikut kalau handle berubah:
 
 - `https://www.instagram.com/hipawmate`
 - `https://www.tiktok.com/@hipawmate`
 
 ## Add GA4/GTM later
 
-If using Google Tag Manager, paste the GTM `<script>` inside the `<head>` section and the GTM `<noscript>` immediately after `<body>`.
+Kalau pakai Google Tag Manager, paste GTM `<script>` di dalam `<head>` dan GTM `<noscript>` tepat setelah `<body>`.
