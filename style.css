@@ -371,3 +371,23 @@ h3 {
 .muted-card {
   background: linear-gradient(145deg, #ffffff 0%, #f8fbf7 100%);
 }
+
+.pagination {
+  text-align: center;
+}
+.pagination a {
+  display: inline-block;
+  padding: 8px 12px;
+  color: var(--text);
+  text-decoration: none;
+}
+.pagination .active {
+  background-color: var(--primary);
+  color: #fff;
+  font-weight: bold;
+  border-radius: 5px;
+}
+.pagination a:hover:not(.active){
+  background-color: #d6d6d6;
+  border-radius: 5px;
+}
