@@ -11,7 +11,7 @@ const navigationItems = [
     href: "index2topik.html"
   },
   {
-    label: "Store",
+    label: "Katalog",
     href: "index3store.html"
   },
   {
