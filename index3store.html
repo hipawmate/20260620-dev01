@@ -130,7 +130,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </button>
   </div>
 </div>
+<!-- Sort -->
+<div class="mx-auto max-w-7xl px-4 pt-6">
+  <div class="flex justify-center">
+    <label for="sort-products" class="sr-only">Urutkan produk</label>
 
+    <select
+      id="sort-products"
+      class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 shadow-sm"
+    >
+      <option value="default">Urutkan: Default</option>
+      <option value="price-asc">Harga termurah</option>
+      <option value="price-desc">Harga termahal</option>
+      <option value="name-asc">Nama A-Z</option>
+      <option value="name-desc">Nama Z-A</option>
+      <option value="top-pick">Top Picks duluan</option>
+    </select>
+  </div>
+</div>
 <!-- Product List -->
 <div id="product-grid" class="container grid grid-cols-5 gap-4 max-w-l mx-auto py-8"></div>
 <div id="pagination"></div>
