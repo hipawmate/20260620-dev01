@@ -50,15 +50,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <div class="mx-auto mt-8 max-w-xl">
-      <form action="#" class="sm:flex sm:gap-4">
+     <form id="product-search-form" action="#" class="sm:flex sm:gap-4">
         <div class="sm:flex-1">
-          <label for="text" class="sr-only">Product Name</label>
+          <label for="product-search" class="sr-only">Cari produk</label>
 
-          <input
-            type="text"
-            placeholder="Automatic Pet Feeder"
-            class="w-full rounded-md border-gray-200 bg-white p-3 text-gray-700 shadow-xs transition focus:border-white focus:ring-2 focus:ring-red-400 focus:outline-hidden"
-          />
+<input
+  id="product-search"
+  type="text"
+  placeholder="Cari produk, contoh: carrier, catnip, grooming"
+  class="w-full rounded-md border-gray-200 bg-white p-3 text-gray-700 shadow-xs transition focus:border-white focus:ring-2 focus:ring-red-400 focus:outline-hidden"
+/>
         </div>
 
         <button
