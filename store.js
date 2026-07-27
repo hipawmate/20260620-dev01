@@ -6,9 +6,19 @@ const searchForm = document.getElementById("product-search-form");
 const PRODUCTS_PER_PAGE = 12;
 
 let currentPage = 1;
-let currentProducts = products.filter(function (product) {
-  return product.status === "show" || product.status === "top_pick";
-});
+function normalizeStatus(product) {
+  return String(product.status || product.includeStatus || "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "_");
+}
+
+function isVisibleProduct(product) {
+  const status = normalizeStatus(product);
+  return status === "show" || status === "top_pick";
+}
+
+let currentProducts = products.filter(isVisibleProduct);
 
 function normalizeText(value) {
   return String(value || "").toLowerCase().trim();
@@ -155,8 +165,7 @@ function renderPagination(productList) {
 function filterProductsBySearch(query) {
   const cleanQuery = normalizeText(query);
 
-  const visibleProducts = products.filter(function (product) {
-    return product.status === "show" || product.status === "top_pick";
+ const visibleProducts = products.filter(isVisibleProduct);
   });
 
   if (!cleanQuery) {
