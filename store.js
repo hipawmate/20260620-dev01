@@ -4,7 +4,7 @@
   const searchInput = document.getElementById("product-search");
   const searchForm = document.getElementById("product-search-form");
 
-  const PRODUCTS_PER_PAGE = 12;
+  const PRODUCTS_PER_PAGE = 15;
   let currentPage = 1;
 
   const productData =
