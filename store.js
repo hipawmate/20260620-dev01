@@ -187,7 +187,14 @@ function openProductModal(product) {
   modalPrice.textContent = product.priceDisplay || "";
   modalDescription.textContent = getProductDescription(product);
 
-  modalProductLink.href = product.productUrl || "#";
+ const whatsappNumber = "6285759997767"; // ganti dengan nomor WA kamu
+
+const whatsappMessage = encodeURIComponent(
+  `Halo HiPawMate, aku mau tanya soal ${product.name || product.nameOriginal || "produk ini"} (${product.hpmSku || ""}).`
+);
+
+modalProductLink.href = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+modalProductLink.textContent = "Tanya via WhatsApp";;
 
   productModal.classList.remove("hidden");
   document.body.classList.add("overflow-hidden");
