@@ -282,7 +282,13 @@ return sortProducts(filteredProducts);
         : "category-btn rounded-full border px-4 py-2 text-sm hover:bg-gray-100";
     });
   }
-
+if (sortSelect) {
+  sortSelect.addEventListener("change", function () {
+    activeSort = sortSelect.value;
+    currentPage = 1;
+    updatePage();
+  });
+}
   function updatePage() {
     currentProducts = getFilteredProducts();
 
