@@ -5,7 +5,7 @@
   const searchForm = document.getElementById("product-search-form");
   const categoryButtons = document.querySelectorAll(".category-btn");
 
-  const PRODUCTS_PER_PAGE = 12;
+  const PRODUCTS_PER_PAGE = 15;
 
   let currentPage = 1;
   let activeCategory = "all";
