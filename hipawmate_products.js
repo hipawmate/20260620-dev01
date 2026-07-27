@@ -435,7 +435,7 @@ const products = [
     "price": 187500,
     "priceDisplay": "Rp187,500",
     "productUrl": "https://www.kmart.com.au/product/beaver-with-catnip-43674787/",
-    "imageUrl": "https://assets.kmart.com.au/transform/f1b1579c-ec9f-478d-b8e1-a3dc54f79ffa/43674787-1?io=transform:extend,width:580,height:725",
+    "imageUrl": "assets/products/HPM-KM-0031.jpg",
     "searchKeywords": "beaver catnip, catnip toy, boneka catnip, mainan kucing, mainan gigit, enrichment",
     "seoPrimaryKeyword": "mainan catnip kucing",
     "seoSupportingKeywords": "boneka catnip, catnip toy kucing, mainan gigit kucing",
