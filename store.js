@@ -6,6 +6,11 @@ const searchForm = document.getElementById("product-search-form");
 const PRODUCTS_PER_PAGE = 12;
 
 let currentPage = 1;
+
+function normalizeText(value) {
+  return String(value || "").toLowerCase().trim();
+}
+
 function normalizeStatus(product) {
   return String(product.status || product.includeStatus || "")
     .toLowerCase()
@@ -18,11 +23,8 @@ function isVisibleProduct(product) {
   return status === "show" || status === "top_pick";
 }
 
-let currentProducts = products.filter(isVisibleProduct);
-
-function normalizeText(value) {
-  return String(value || "").toLowerCase().trim();
-}
+const allVisibleProducts = products.filter(isVisibleProduct);
+let currentProducts = allVisibleProducts;
 
 function getProductSearchText(product) {
   return [
@@ -73,7 +75,7 @@ function renderProducts(productList) {
 
     card.dataset.sku = product.hpmSku;
     card.dataset.category = product.categorySlug;
-    card.dataset.status = product.status;
+    card.dataset.status = normalizeStatus(product);
 
     card.innerHTML = `
       <div class="relative">
@@ -84,7 +86,7 @@ function renderProducts(productList) {
         />
 
         ${
-          product.status === "top_pick"
+          normalizeStatus(product) === "top_pick"
             ? `<span class="absolute left-2 top-2 rounded-full bg-white px-2 py-1 text-xs font-semibold text-gray-700 shadow-sm">Top Pick</span>`
             : ""
         }
@@ -165,16 +167,13 @@ function renderPagination(productList) {
 function filterProductsBySearch(query) {
   const cleanQuery = normalizeText(query);
 
- const visibleProducts = products.filter(isVisibleProduct);
-  });
-
   if (!cleanQuery) {
-    return visibleProducts;
+    return allVisibleProducts;
   }
 
   const queryWords = cleanQuery.split(/\s+/).filter(Boolean);
 
-  return visibleProducts.filter(function (product) {
+  return allVisibleProducts.filter(function (product) {
     const searchText = getProductSearchText(product);
 
     return queryWords.every(function (word) {
@@ -188,11 +187,6 @@ function updatePage() {
 
   renderProducts(paginatedProducts);
   renderPagination(currentProducts);
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
 }
 
 function handleSearch() {
