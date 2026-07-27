@@ -1,15 +1,17 @@
 const productGrid = document.getElementById("product-grid");
+const pagination = document.getElementById("pagination");
 const searchInput = document.getElementById("product-search");
 const searchForm = document.getElementById("product-search-form");
 
-const visibleProducts = products.filter(function (product) {
+const PRODUCTS_PER_PAGE = 12;
+
+let currentPage = 1;
+let currentProducts = products.filter(function (product) {
   return product.status === "show" || product.status === "top_pick";
 });
 
 function normalizeText(value) {
-  return String(value || "")
-    .toLowerCase()
-    .trim();
+  return String(value || "").toLowerCase().trim();
 }
 
 function getProductSearchText(product) {
@@ -27,6 +29,13 @@ function getProductSearchText(product) {
     .toLowerCase();
 }
 
+function getPaginatedProducts(productList, page) {
+  const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
+  const endIndex = startIndex + PRODUCTS_PER_PAGE;
+
+  return productList.slice(startIndex, endIndex);
+}
+
 function renderProducts(productList) {
   if (!productGrid) return;
 
@@ -36,7 +45,9 @@ function renderProducts(productList) {
     productGrid.innerHTML = `
       <div class="col-span-full text-center py-12">
         <p class="text-gray-600">Produk belum ketemu.</p>
-        <p class="text-sm text-gray-400 mt-2">Coba keyword lain seperti carrier, catnip, grooming, atau scratcher.</p>
+        <p class="text-sm text-gray-400 mt-2">
+          Coba keyword lain seperti carrier, catnip, grooming, atau scratcher.
+        </p>
       </div>
     `;
     return;
@@ -82,8 +93,71 @@ function renderProducts(productList) {
   });
 }
 
+function renderPagination(productList) {
+  if (!pagination) return;
+
+  pagination.innerHTML = "";
+
+  const totalPages = Math.ceil(productList.length / PRODUCTS_PER_PAGE);
+
+  if (totalPages <= 1) return;
+
+  pagination.className = "flex flex-wrap justify-center items-center gap-2 py-8";
+
+  const previousButton = document.createElement("button");
+  previousButton.textContent = "Previous";
+  previousButton.disabled = currentPage === 1;
+  previousButton.className =
+    "rounded-md border px-3 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed";
+
+  previousButton.addEventListener("click", function () {
+    if (currentPage > 1) {
+      currentPage = currentPage - 1;
+      updatePage();
+    }
+  });
+
+  pagination.appendChild(previousButton);
+
+  for (let page = 1; page <= totalPages; page++) {
+    const pageButton = document.createElement("button");
+    pageButton.textContent = page;
+
+    pageButton.className =
+      page === currentPage
+        ? "rounded-md border bg-indigo-600 px-3 py-2 text-sm text-white"
+        : "rounded-md border px-3 py-2 text-sm hover:bg-gray-100";
+
+    pageButton.addEventListener("click", function () {
+      currentPage = page;
+      updatePage();
+    });
+
+    pagination.appendChild(pageButton);
+  }
+
+  const nextButton = document.createElement("button");
+  nextButton.textContent = "Next";
+  nextButton.disabled = currentPage === totalPages;
+  nextButton.className =
+    "rounded-md border px-3 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed";
+
+  nextButton.addEventListener("click", function () {
+    if (currentPage < totalPages) {
+      currentPage = currentPage + 1;
+      updatePage();
+    }
+  });
+
+  pagination.appendChild(nextButton);
+}
+
 function filterProductsBySearch(query) {
   const cleanQuery = normalizeText(query);
+
+  const visibleProducts = products.filter(function (product) {
+    return product.status === "show" || product.status === "top_pick";
+  });
 
   if (!cleanQuery) {
     return visibleProducts;
@@ -100,11 +174,25 @@ function filterProductsBySearch(query) {
   });
 }
 
+function updatePage() {
+  const paginatedProducts = getPaginatedProducts(currentProducts, currentPage);
+
+  renderProducts(paginatedProducts);
+  renderPagination(currentProducts);
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
+
 function handleSearch() {
   const query = searchInput ? searchInput.value : "";
-  const filteredProducts = filterProductsBySearch(query);
 
-  renderProducts(filteredProducts);
+  currentProducts = filterProductsBySearch(query);
+  currentPage = 1;
+
+  updatePage();
 }
 
 if (searchInput) {
@@ -118,4 +206,4 @@ if (searchForm) {
   });
 }
 
-renderProducts(visibleProducts);
+updatePage();
