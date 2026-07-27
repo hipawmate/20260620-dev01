@@ -486,7 +486,7 @@ const products = [
     "price": 225000,
     "priceDisplay": "Rp225,000",
     "productUrl": "https://www.kmart.com.au/product/cat-kitten-cave-43659180/",
-    "imageUrl: "assets/products/HPM-KM-0002.jpg",
+    "imageUrl: "https://assets.kmart.com.au/transform/bbe89460-0e72-4381-8c20-071efdaa9804/43659180-1?io=transform:extend,width:580,height:725",
     "searchKeywords": "cat cave, rumah kucing, tempat tidur kucing, kitten cave, kasur kucing, hideout kucing",
     "seoPrimaryKeyword": "rumah kucing",
     "seoSupportingKeywords": "cat cave, tempat tidur kucing, kasur kucing, hideout kucing",
