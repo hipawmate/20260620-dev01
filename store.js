@@ -5,7 +5,8 @@
   const searchForm = document.getElementById("product-search-form");
   const categoryButtons = document.querySelectorAll(".category-btn");
 
-  const PRODUCTS_PER_PAGE = 15;
+  const PRODUCTS_PER_PAGE = 12;
+
   let currentPage = 1;
   let activeCategory = "all";
 
@@ -56,10 +57,6 @@
     return;
   }
 
-  function normalizeText(value) {
-    return String(value || "").toLowerCase().trim();
-  }
-
   function getProductSearchText(product) {
     return [
       product.name,
@@ -74,6 +71,7 @@
       .join(" ")
       .toLowerCase();
   }
+
   function getFilteredProducts() {
     const query = searchInput ? normalizeText(searchInput.value) : "";
     const queryWords = query.split(/\s+/).filter(Boolean);
@@ -98,7 +96,6 @@
     });
   }
 
-
   function getPaginatedProducts(productList, page) {
     const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
     const endIndex = startIndex + PRODUCTS_PER_PAGE;
@@ -114,7 +111,7 @@
         <div class="col-span-full text-center py-12">
           <p class="text-gray-600">Produk belum ketemu.</p>
           <p class="text-sm text-gray-400 mt-2">
-            Coba keyword lain seperti carrier, catnip, grooming, atau scratcher.
+            Coba keyword/kategori lain seperti carrier, catnip, grooming, atau scratcher.
           </p>
         </div>
       `;
@@ -123,11 +120,16 @@
 
     productList.forEach(function (product) {
       const card = document.createElement("a");
+      const status = normalizeStatus(product);
 
       card.href = product.productUrl || "#";
       card.target = "_blank";
       card.rel = "noopener noreferrer";
       card.className = "group block product-card";
+
+      card.dataset.sku = product.hpmSku || "";
+      card.dataset.category = product.categorySlug || "";
+      card.dataset.status = status;
 
       card.innerHTML = `
         <div class="relative">
@@ -138,7 +140,7 @@
           />
 
           ${
-            product.status === "top_pick" || product.status === "Top Pick"
+            status === "top_pick"
               ? `<span class="absolute left-2 top-2 rounded-full bg-white px-2 py-1 text-xs font-semibold text-gray-700 shadow-sm">Top Pick</span>`
               : ""
           }
@@ -215,7 +217,8 @@
 
     pagination.appendChild(nextButton);
   }
-function updateCategoryButtonStyles() {
+
+  function updateCategoryButtonStyles() {
     categoryButtons.forEach(function (button) {
       const isActive = button.dataset.category === activeCategory;
 
@@ -225,7 +228,7 @@ function updateCategoryButtonStyles() {
     });
   }
 
-    function updatePage() {
+  function updatePage() {
     currentProducts = getFilteredProducts();
 
     const totalPages = Math.ceil(currentProducts.length / PRODUCTS_PER_PAGE);
@@ -240,17 +243,22 @@ function updateCategoryButtonStyles() {
     renderPagination(currentProducts);
     updateCategoryButtonStyles();
   }
+
   if (searchInput) {
-    searchInput.addEventListener("input", handleSearch);
+    searchInput.addEventListener("input", function () {
+      currentPage = 1;
+      updatePage();
+    });
   }
 
   if (searchForm) {
     searchForm.addEventListener("submit", function (event) {
       event.preventDefault();
-      handleSearch();
+      currentPage = 1;
+      updatePage();
     });
   }
-  
+
   categoryButtons.forEach(function (button) {
     button.addEventListener("click", function () {
       activeCategory = button.dataset.category || "all";
