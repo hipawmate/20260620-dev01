@@ -4,27 +4,34 @@ const searchInput = document.getElementById("product-search");
 const searchForm = document.getElementById("product-search-form");
 
 const PRODUCTS_PER_PAGE = 12;
-
 let currentPage = 1;
+
+const productData =
+  window.HIPAWMATE_PRODUCTS ||
+  (typeof products !== "undefined" ? products : []);
+
+let currentProducts = productData;
+
+function showDebugMessage(message) {
+  if (!productGrid) return;
+
+  productGrid.innerHTML = `
+    <div class="col-span-full text-center py-12">
+      <p class="text-red-600 font-semibold">${message}</p>
+    </div>
+  `;
+}
+
+if (!productGrid) {
+  console.error("product-grid tidak ketemu. Cek id='product-grid' di HTML.");
+} else if (!Array.isArray(productData) || productData.length === 0) {
+  showDebugMessage("Product data belum kebaca. Cek hipawmate_products.js sudah ke-load sebelum store.js.");
+  console.error("Product data kosong atau belum kebaca:", productData);
+}
 
 function normalizeText(value) {
   return String(value || "").toLowerCase().trim();
 }
-
-function normalizeStatus(product) {
-  return String(product.status || product.includeStatus || "")
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "_");
-}
-
-function isVisibleProduct(product) {
-  const status = normalizeStatus(product);
-  return status === "show" || status === "top_pick";
-}
-
-const allVisibleProducts = products.filter(isVisibleProduct);
-let currentProducts = allVisibleProducts;
 
 function getProductSearchText(product) {
   return [
@@ -68,36 +75,32 @@ function renderProducts(productList) {
   productList.forEach(function (product) {
     const card = document.createElement("a");
 
-    card.href = product.productUrl;
+    card.href = product.productUrl || "#";
     card.target = "_blank";
     card.rel = "noopener noreferrer";
     card.className = "group block product-card";
 
-    card.dataset.sku = product.hpmSku;
-    card.dataset.category = product.categorySlug;
-    card.dataset.status = normalizeStatus(product);
-
     card.innerHTML = `
       <div class="relative">
         <img
-          src="${product.imageUrl}"
-          alt="${product.name}"
+          src="${product.imageUrl || ""}"
+          alt="${product.name || "Produk HiPawMate"}"
           class="w-full aspect-[4/5] object-cover rounded-lg bg-neutral-100"
         />
 
         ${
-          normalizeStatus(product) === "top_pick"
+          product.status === "top_pick" || product.status === "Top Pick"
             ? `<span class="absolute left-2 top-2 rounded-full bg-white px-2 py-1 text-xs font-semibold text-gray-700 shadow-sm">Top Pick</span>`
             : ""
         }
       </div>
 
       <div class="mt-3">
-        <p class="text-xs text-neutral-500">${product.categoryDisplay}</p>
+        <p class="text-xs text-neutral-500">${product.categoryDisplay || ""}</p>
         <h3 class="font-medium text-neutral-900 group-hover:underline group-hover:underline-offset-4">
-          ${product.name}
+          ${product.name || product.nameOriginal || "Produk"}
         </h3>
-        <p class="text-sm text-neutral-700">${product.priceDisplay}</p>
+        <p class="text-sm text-neutral-700">${product.priceDisplay || ""}</p>
       </div>
     `;
 
@@ -168,12 +171,12 @@ function filterProductsBySearch(query) {
   const cleanQuery = normalizeText(query);
 
   if (!cleanQuery) {
-    return allVisibleProducts;
+    return productData;
   }
 
   const queryWords = cleanQuery.split(/\s+/).filter(Boolean);
 
-  return allVisibleProducts.filter(function (product) {
+  return productData.filter(function (product) {
     const searchText = getProductSearchText(product);
 
     return queryWords.every(function (word) {
