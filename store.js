@@ -4,11 +4,13 @@
   const searchInput = document.getElementById("product-search");
   const searchForm = document.getElementById("product-search-form");
   const categoryButtons = document.querySelectorAll(".category-btn");
+  const sortSelect = document.getElementById("sort-products");
 
   const PRODUCTS_PER_PAGE = 15;
 
   let currentPage = 1;
   let activeCategory = "all";
+  let activeSort = "default";
 
   const productData =
     window.HIPAWMATE_PRODUCTS ||
@@ -71,29 +73,82 @@
       .join(" ")
       .toLowerCase();
   }
+function getProductPrice(product) {
+  const rawPrice = product.price || product.priceNumber || product.price_number || 0;
 
+  if (typeof rawPrice === "number") {
+    return rawPrice;
+  }
+
+  return Number(String(rawPrice).replace(/[^\d]/g, "")) || 0;
+}
+
+function getProductName(product) {
+  return String(product.name || product.nameOriginal || "").toLowerCase();
+}
+
+function sortProducts(productList) {
+  const sortedProducts = [...productList];
+
+  if (activeSort === "price-asc") {
+    sortedProducts.sort(function (a, b) {
+      return getProductPrice(a) - getProductPrice(b);
+    });
+  }
+
+  if (activeSort === "price-desc") {
+    sortedProducts.sort(function (a, b) {
+      return getProductPrice(b) - getProductPrice(a);
+    });
+  }
+
+  if (activeSort === "name-asc") {
+    sortedProducts.sort(function (a, b) {
+      return getProductName(a).localeCompare(getProductName(b));
+    });
+  }
+
+  if (activeSort === "name-desc") {
+    sortedProducts.sort(function (a, b) {
+      return getProductName(b).localeCompare(getProductName(a));
+    });
+  }
+
+  if (activeSort === "top-pick") {
+    sortedProducts.sort(function (a, b) {
+      const aIsTopPick = normalizeStatus(a) === "top_pick" ? 1 : 0;
+      const bIsTopPick = normalizeStatus(b) === "top_pick" ? 1 : 0;
+
+      return bIsTopPick - aIsTopPick;
+    });
+  }
+
+  return sortedProducts;
+}
   function getFilteredProducts() {
     const query = searchInput ? normalizeText(searchInput.value) : "";
     const queryWords = query.split(/\s+/).filter(Boolean);
 
-    return allVisibleProducts.filter(function (product) {
-      const status = normalizeStatus(product);
-      const categorySlug = product.categorySlug || "";
-      const searchText = getProductSearchText(product);
+    const filteredProducts = allVisibleProducts.filter(function (product) {
+  const status = normalizeStatus(product);
+  const categorySlug = product.categorySlug || "";
+  const searchText = getProductSearchText(product);
 
-      const matchCategory =
-        activeCategory === "all" ||
-        categorySlug === activeCategory ||
-        (activeCategory === "top_pick" && status === "top_pick");
+  const matchCategory =
+    activeCategory === "all" ||
+    categorySlug === activeCategory ||
+    (activeCategory === "top_pick" && status === "top_pick");
 
-      const matchSearch =
-        queryWords.length === 0 ||
-        queryWords.every(function (word) {
-          return searchText.includes(word);
-        });
-
-      return matchCategory && matchSearch;
+  const matchSearch =
+    queryWords.length === 0 ||
+    queryWords.every(function (word) {
+      return searchText.includes(word);
     });
+
+  return matchCategory && matchSearch;
+});
+
+return sortProducts(filteredProducts);
   }
 
   function getPaginatedProducts(productList, page) {
