@@ -3,15 +3,35 @@
   const pagination = document.getElementById("pagination");
   const searchInput = document.getElementById("product-search");
   const searchForm = document.getElementById("product-search-form");
+  const categoryButtons = document.querySelectorAll(".category-btn");
 
   const PRODUCTS_PER_PAGE = 15;
   let currentPage = 1;
+  let activeCategory = "all";
 
   const productData =
     window.HIPAWMATE_PRODUCTS ||
     (typeof products !== "undefined" ? products : []);
 
-  let currentProducts = productData;
+  function normalizeText(value) {
+    return String(value || "").toLowerCase().trim();
+  }
+
+  function normalizeStatus(product) {
+    return String(product.status || product.includeStatus || "")
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "_");
+  }
+
+  function isVisibleProduct(product) {
+    const status = normalizeStatus(product);
+
+    return status === "show" || status === "top_pick" || status === "";
+  }
+
+  const allVisibleProducts = productData.filter(isVisibleProduct);
+  let currentProducts = allVisibleProducts;
 
   function showDebugMessage(message) {
     if (!productGrid) return;
@@ -54,6 +74,30 @@
       .join(" ")
       .toLowerCase();
   }
+  function getFilteredProducts() {
+    const query = searchInput ? normalizeText(searchInput.value) : "";
+    const queryWords = query.split(/\s+/).filter(Boolean);
+
+    return allVisibleProducts.filter(function (product) {
+      const status = normalizeStatus(product);
+      const categorySlug = product.categorySlug || "";
+      const searchText = getProductSearchText(product);
+
+      const matchCategory =
+        activeCategory === "all" ||
+        categorySlug === activeCategory ||
+        (activeCategory === "top_pick" && status === "top_pick");
+
+      const matchSearch =
+        queryWords.length === 0 ||
+        queryWords.every(function (word) {
+          return searchText.includes(word);
+        });
+
+      return matchCategory && matchSearch;
+    });
+  }
+
 
   function getPaginatedProducts(productList, page) {
     const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
@@ -171,41 +215,31 @@
 
     pagination.appendChild(nextButton);
   }
+function updateCategoryButtonStyles() {
+    categoryButtons.forEach(function (button) {
+      const isActive = button.dataset.category === activeCategory;
 
-  function filterProductsBySearch(query) {
-    const cleanQuery = normalizeText(query);
-
-    if (!cleanQuery) {
-      return productData;
-    }
-
-    const queryWords = cleanQuery.split(/\s+/).filter(Boolean);
-
-    return productData.filter(function (product) {
-      const searchText = getProductSearchText(product);
-
-      return queryWords.every(function (word) {
-        return searchText.includes(word);
-      });
+      button.className = isActive
+        ? "category-btn rounded-full border px-4 py-2 text-sm bg-indigo-600 text-white"
+        : "category-btn rounded-full border px-4 py-2 text-sm hover:bg-gray-100";
     });
   }
 
-  function updatePage() {
+    function updatePage() {
+    currentProducts = getFilteredProducts();
+
+    const totalPages = Math.ceil(currentProducts.length / PRODUCTS_PER_PAGE);
+
+    if (currentPage > totalPages) {
+      currentPage = 1;
+    }
+
     const paginatedProducts = getPaginatedProducts(currentProducts, currentPage);
 
     renderProducts(paginatedProducts);
     renderPagination(currentProducts);
+    updateCategoryButtonStyles();
   }
-
-  function handleSearch() {
-    const query = searchInput ? searchInput.value : "";
-
-    currentProducts = filterProductsBySearch(query);
-    currentPage = 1;
-
-    updatePage();
-  }
-
   if (searchInput) {
     searchInput.addEventListener("input", handleSearch);
   }
@@ -216,6 +250,14 @@
       handleSearch();
     });
   }
+  
+  categoryButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      activeCategory = button.dataset.category || "all";
+      currentPage = 1;
+      updatePage();
+    });
+  });
 
   updatePage();
 })();
