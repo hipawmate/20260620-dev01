@@ -151,6 +151,59 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- Product List -->
 <div id="product-grid" class="container grid grid-cols-5 gap-4 max-w-l mx-auto py-8"></div>
 <div id="pagination"></div>
+  <!-- Product Modal -->
+<div id="product-modal" class="hidden fixed inset-0 z-50">
+  <div id="product-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+
+  <div class="relative mx-auto mt-10 max-w-3xl rounded-2xl bg-white p-6 shadow-xl">
+    <button
+      id="product-modal-close"
+      type="button"
+      class="absolute right-4 top-4 rounded-full border px-3 py-1 text-sm"
+    >
+      ✕
+    </button>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <img
+        id="modal-image"
+        src=""
+        alt=""
+        class="w-full rounded-xl bg-neutral-100 object-cover"
+      />
+
+      <div>
+        <p id="modal-category" class="text-sm text-neutral-500"></p>
+
+        <h3 id="modal-title" class="mt-2 text-2xl font-bold text-neutral-900"></h3>
+
+        <p id="modal-price" class="mt-2 text-lg font-semibold text-neutral-800"></p>
+
+        <p id="modal-description" class="mt-4 text-sm leading-6 text-neutral-600"></p>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a
+            id="modal-product-link"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded-md bg-indigo-600 px-5 py-3 text-sm font-medium text-white"
+          >
+            Lihat produk
+          </a>
+
+          <button
+            id="modal-close-secondary"
+            type="button"
+            class="rounded-md border px-5 py-3 text-sm font-medium text-neutral-700"
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Product List -->
   <div id="product-grid" class="container grid grid-cols-5 gap-4 max-w-l mx-auto py-8"></div>
