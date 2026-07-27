@@ -5,6 +5,17 @@
   const searchForm = document.getElementById("product-search-form");
   const categoryButtons = document.querySelectorAll(".category-btn");
   const sortSelect = document.getElementById("sort-products");
+  const productModal = document.getElementById("product-modal");
+const modalBackdrop = document.getElementById("product-modal-backdrop");
+const modalClose = document.getElementById("product-modal-close");
+const modalCloseSecondary = document.getElementById("modal-close-secondary");
+
+const modalImage = document.getElementById("modal-image");
+const modalCategory = document.getElementById("modal-category");
+const modalTitle = document.getElementById("modal-title");
+const modalPrice = document.getElementById("modal-price");
+const modalDescription = document.getElementById("modal-description");
+const modalProductLink = document.getElementById("modal-product-link");
 
   const PRODUCTS_PER_PAGE = 15;
 
@@ -157,7 +168,37 @@ return sortProducts(filteredProducts);
 
     return productList.slice(startIndex, endIndex);
   }
+function getProductDescription(product) {
+  return (
+    product.descriptorShort ||
+    product.descriptor ||
+    `Produk pilihan HiPawMate untuk kategori ${product.categoryDisplay || "kebutuhan anabul"}. Cek detail, harga, dan ketersediaan terbaru di halaman retailer.`
+  );
+}
 
+function openProductModal(product) {
+  if (!productModal) return;
+
+  modalImage.src = product.imageUrl || "";
+  modalImage.alt = product.name || "Produk HiPawMate";
+
+  modalCategory.textContent = product.categoryDisplay || "";
+  modalTitle.textContent = product.name || product.nameOriginal || "Produk HiPawMate";
+  modalPrice.textContent = product.priceDisplay || "";
+  modalDescription.textContent = getProductDescription(product);
+
+  modalProductLink.href = product.productUrl || "#";
+
+  productModal.classList.remove("hidden");
+  document.body.classList.add("overflow-hidden");
+}
+
+function closeProductModal() {
+  if (!productModal) return;
+
+  productModal.classList.add("hidden");
+  document.body.classList.remove("overflow-hidden");
+}
   function renderProducts(productList) {
     productGrid.innerHTML = "";
 
@@ -174,14 +215,10 @@ return sortProducts(filteredProducts);
     }
 
     productList.forEach(function (product) {
-      const card = document.createElement("a");
-      const status = normalizeStatus(product);
+      const card = document.createElement("button");
 
-      card.href = product.productUrl || "#";
-      card.target = "_blank";
-      card.rel = "noopener noreferrer";
-      card.className = "group block product-card";
-
+card.type = "button";
+card.className = "group block product-card text-left";
       card.dataset.sku = product.hpmSku || "";
       card.dataset.category = product.categorySlug || "";
       card.dataset.status = status;
@@ -209,7 +246,9 @@ return sortProducts(filteredProducts);
           <p class="text-sm text-neutral-700">${product.priceDisplay || ""}</p>
         </div>
       `;
-
+card.addEventListener("click", function () {
+  openProductModal(product);
+});
       productGrid.appendChild(card);
     });
   }
@@ -327,6 +366,22 @@ if (sortSelect) {
       updatePage();
     });
   });
+if (modalClose) {
+  modalClose.addEventListener("click", closeProductModal);
+}
 
+if (modalCloseSecondary) {
+  modalCloseSecondary.addEventListener("click", closeProductModal);
+}
+
+if (modalBackdrop) {
+  modalBackdrop.addEventListener("click", closeProductModal);
+}
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape") {
+    closeProductModal();
+  }
+});
   updatePage();
 })();
